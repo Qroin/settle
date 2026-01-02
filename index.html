@@ -12,7 +12,7 @@ body {
 }
 
 .container {
-  max-width: 760px;
+  max-width: 780px;
   margin: auto;
   background: white;
   border-radius: 16px;
@@ -46,11 +46,25 @@ label {
   font-size: 14px;
 }
 
-input {
+input, textarea {
   width: 100%;
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #d1d5db;
+  font-size: 14px;
+}
+
+textarea {
+  resize: none;
+  margin-top: 6px;
+  height: 60px;
+  background: #f9fafb;
+}
+
+.cost-box {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 14px;
 }
 
 button {
@@ -67,10 +81,6 @@ button.secondary {
   background: #6b7280;
 }
 
-button:hover {
-  opacity: 0.9;
-}
-
 .result {
   margin-top: 28px;
   background: #f9fafb;
@@ -84,6 +94,13 @@ button:hover {
   border-radius: 8px;
   padding: 12px;
   margin-bottom: 10px;
+}
+
+.memo {
+  font-size: 13px;
+  color: #374151;
+  margin-top: 6px;
+  white-space: pre-line;
 }
 
 /* modal */
@@ -129,16 +146,31 @@ button:hover {
 
   <div class="section">
     <h2>비용</h2>
+
     <div class="row">
-      <label>전체 공통 비용
-        <input type="number" id="totalCost">
-      </label>
-      <label>어른 전용 비용
-        <input type="number" id="adultCost">
-      </label>
-      <label>아이 전용 비용
-        <input type="number" id="childCost">
-      </label>
+      <div class="cost-box">
+        <label>공통 비용
+          <input type="number" id="totalCost">
+          <textarea id="totalMemo"
+            placeholder="예: 숙소비, 장보기 비용"></textarea>
+        </label>
+      </div>
+
+      <div class="cost-box">
+        <label>어른 비용
+          <input type="number" id="adultCost">
+          <textarea id="adultMemo"
+            placeholder="예: 커피 40,000원&#10;피자 42,000원"></textarea>
+        </label>
+      </div>
+
+      <div class="cost-box">
+        <label>아이 비용
+          <input type="number" id="childCost">
+          <textarea id="childMemo"
+            placeholder="예: 키즈카페, 간식"></textarea>
+        </label>
+      </div>
     </div>
   </div>
 
@@ -154,9 +186,7 @@ button:hover {
 <div class="modal" id="modal">
   <div class="modal-content">
     <h2>출력할 가구 유형</h2>
-
     <div id="typeList"></div>
-
     <button onclick="addType()">+ 유형 추가</button>
     <div style="margin-top:16px; text-align:right">
       <button class="secondary" onclick="closeModal()">닫기</button>
@@ -172,11 +202,10 @@ let types = [
 
 function openModal() {
   renderTypes();
-  document.getElementById("modal").style.display = "block";
+  modal.style.display = "block";
 }
-
 function closeModal() {
-  document.getElementById("modal").style.display = "none";
+  modal.style.display = "none";
 }
 
 function addType() {
@@ -185,10 +214,9 @@ function addType() {
 }
 
 function renderTypes() {
-  const list = document.getElementById("typeList");
-  list.innerHTML = "";
+  typeList.innerHTML = "";
   types.forEach((t, i) => {
-    list.innerHTML += `
+    typeList.innerHTML += `
       <div class="type-row">
         <input type="number" value="${t.adult}"
           onchange="types[${i}].adult=this.value">
@@ -203,12 +231,11 @@ function renderTypes() {
 function calculate() {
   const totalAdult = +totalAdultInput.value;
   const totalChild = +totalChildInput.value;
-
-  const totalCost = +document.getElementById("totalCost").value;
-  const adultCost = +document.getElementById("adultCost").value;
-  const childCost = +document.getElementById("childCost").value;
-
   const totalPeople = totalAdult + totalChild;
+
+  const totalCost = +totalCostInput.value;
+  const adultCost = +adultCostInput.value;
+  const childCost = +childCostInput.value;
 
   const perPerson = totalCost / totalPeople;
   const perAdult = adultCost / totalAdult;
@@ -216,10 +243,19 @@ function calculate() {
 
   let html = `
     <strong>계산 기준</strong><br>
-    - 공통비 1인당: ${perPerson.toFixed(0)}원<br>
-    - 어른 1인당: ${perAdult.toFixed(0)}원<br>
-    - 아이 1인당: ${perChild.toFixed(0)}원
+    공통 1인당: ${perPerson.toFixed(0)}원<br>
+    어른 1인당: ${perAdult.toFixed(0)}원<br>
+    아이 1인당: ${perChild.toFixed(0)}원
     <hr>
+
+    <strong>비용 메모</strong><br>
+    <div class="memo">
+      [공통] ${totalMemo.value || "-"}<br>
+      [어른] ${adultMemo.value || "-"}<br>
+      [아이] ${childMemo.value || "-"}
+    </div>
+    <hr>
+
     <strong>가구 유형별 정산</strong><br><br>
   `;
 
@@ -237,7 +273,7 @@ function calculate() {
     `;
   });
 
-  document.getElementById("result").innerHTML = html;
+  result.innerHTML = html;
 }
 </script>
 
