@@ -48,11 +48,11 @@ label {
 
 input, textarea {
   width: 100%;
-  padding: 8px; /* 10px -> 8px 축소 */
+  padding: 8px; 
   border-radius: 8px;
   border: 1px solid #d1d5db;
   font-size: 14px;
-  box-sizing: border-box; /* 패딩이 박스 크기에 영향을 주지 않도록 추가 */
+  box-sizing: border-box; 
 }
 
 textarea {
@@ -345,7 +345,6 @@ function calculate() {
   const perAdult = totalAdult > 0 ? adultCost / totalAdult : 0;
   const perChild = totalChild > 0 ? childCost / totalChild : 0;
 
-  // 검산은 모달에서 이미 확인되었으므로 결과에 포함하지 않음
 
   let html = `
     <strong>계산 기준</strong><br>
@@ -360,9 +359,7 @@ function calculate() {
 
   types.forEach(t => {
     const sum =
-      (t.adult + t.child) * perPerson +
-      t.adult * perAdult +
-      t.child * perChild;
+      Math.floor(((t.adult + t.child) * perPerson + t.adult * perAdult + t.child * perChild ) /100) * 100;
 
     html += `
       <div class="type-result">
