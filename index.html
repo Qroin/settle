@@ -3,14 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <title>정산 계산기</title>
-
 <style>
 body {
   background: #f4f6f8;
   font-family: Pretendard, Arial, sans-serif;
   padding: 40px;
 }
-
 .container {
   max-width: 780px;
   margin: auto;
@@ -19,55 +17,46 @@ body {
   padding: 32px;
   box-shadow: 0 12px 30px rgba(0,0,0,0.08);
 }
-
 h1 {
   margin-top: 0;
   text-align: center;
 }
-
 h2 {
   font-size: 18px;
   margin-bottom: 12px;
   border-left: 4px solid #4f46e5;
   padding-left: 8px;
 }
-
 .section {
   margin-bottom: 28px;
 }
-
 .row {
   display: flex;
   gap: 12px;
 }
-
 label {
   flex: 1;
   font-size: 14px;
 }
-
 input, textarea {
   width: 100%;
-  padding: 8px; 
+  padding: 8px;
   border-radius: 8px;
   border: 1px solid #d1d5db;
   font-size: 14px;
-  box-sizing: border-box; 
+  box-sizing: border-box;
 }
-
 textarea {
   resize: none;
   margin-top: 6px;
   height: 60px;
   background: #f9fafb;
 }
-
 .cost-box {
   background: #f9fafb;
   border-radius: 12px;
   padding: 14px;
 }
-
 button {
   padding: 12px 24px;
   border-radius: 10px;
@@ -79,33 +68,25 @@ button {
   transition: all 0.3s ease;
   box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
 }
-
 button:hover {
   background: #4338ca;
   box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
   transform: translateY(-1px);
 }
-
 button.secondary {
   background: #6b7280;
 }
-
 button.secondary:hover {
   background: #4b5563;
-  box-shadow: 0 4px 8px rgba(107, 114, 128, 0.3);
-  transform: translateY(-1px);
 }
-
 button.delete {
   background: #ef4444;
   padding: 8px 12px;
   font-size: 13px;
 }
-
 button.delete:hover {
   background: #dc2626;
 }
-
 .result {
   margin-top: 28px;
   background: #f9fafb;
@@ -113,29 +94,27 @@ button.delete:hover {
   padding: 20px;
   font-size: 14px;
 }
-
 .type-result {
   background: #eef2ff;
   border-radius: 8px;
   padding: 12px;
   margin-bottom: 10px;
 }
-
 .memo {
   font-size: 13px;
   color: #374151;
   margin-top: 6px;
   white-space: pre-line;
 }
-
 /* modal */
 .modal {
   display: none;
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.45);
+  align-items: flex-start;
+  justify-content: center;
 }
-
 .modal-content {
   width: 480px;
   background: white;
@@ -143,40 +122,36 @@ button.delete:hover {
   padding: 24px;
   margin: 120px auto;
 }
-
 .type-table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 16px;
 }
-
 .type-table th, .type-table td {
   padding: 8px;
   text-align: center;
   border-bottom: 1px solid #e5e7eb;
 }
-
 .type-table th {
   font-size: 14px;
   color: #4b5563;
 }
-
-.type-table input {
+.type-table input[type="number"] {
   width: 60px;
   text-align: center;
 }
-
+.type-table input[type="text"] {
+  width: 120px;
+}
 .add-button {
   margin-bottom: 16px;
 }
-
 .button-row {
   display: flex;
   justify-content: center;
   gap: 20px;
   margin-bottom: 20px;
 }
-
 .modal-buttons {
   display: flex;
   justify-content: flex-end;
@@ -185,9 +160,7 @@ button.delete:hover {
 }
 </style>
 </head>
-
 <body>
-
 <div class="container">
   <h1>정산 계산기</h1>
 
@@ -205,29 +178,23 @@ button.delete:hover {
 
   <div class="section">
     <h2>비용</h2>
-
     <div class="row">
       <div class="cost-box">
         <label>공통 비용
           <input type="number" id="totalCost">
-          <textarea id="totalMemo"
-            placeholder="예: 대관료 100,000원"></textarea>
+          <textarea id="totalMemo" placeholder="예: 대관료 100,000원"></textarea>
         </label>
       </div>
-
       <div class="cost-box">
         <label>어른 비용
           <input type="number" id="adultCost">
-          <textarea id="adultMemo"
-            placeholder="예: 식비 40,000원"></textarea>
+          <textarea id="adultMemo" placeholder="예: 식비 40,000원"></textarea>
         </label>
       </div>
-
       <div class="cost-box">
         <label>아이 비용
           <input type="number" id="childCost">
-          <textarea id="childMemo"
-            placeholder="예: 간식 20,000원"></textarea>
+          <textarea id="childMemo" placeholder="예: 간식 20,000원"></textarea>
         </label>
       </div>
     </div>
@@ -251,6 +218,7 @@ button.delete:hover {
           <th>어른</th>
           <th>아이</th>
           <th>가구</th>
+          <th>메모</th>
           <th>삭제</th>
         </tr>
       </thead>
@@ -270,20 +238,18 @@ const totalChildInput = document.getElementById('totalChild');
 const totalCostInput = document.getElementById('totalCost');
 const adultCostInput = document.getElementById('adultCost');
 const childCostInput = document.getElementById('childCost');
-const totalMemo = document.getElementById('totalMemo');
-const adultMemo = document.getElementById('adultMemo');
-const childMemo = document.getElementById('childMemo');
 const modal = document.getElementById('modal');
 const typeList = document.getElementById('typeList');
 const result = document.getElementById('result');
 
+// 메모 속성 추가 (기본값 빈 문자열)
 let types = [
-  { adult: 1, child: 1, count: 1 },
+  { adult: 1, child: 1, count: 1, memo: '' },
 ];
 
 function openModal() {
   renderTypes();
-  modal.style.display = "block";
+  modal.style.display = "flex";  // 중앙 정렬을 위해 flex로 변경
 }
 
 function closeModal() {
@@ -291,7 +257,7 @@ function closeModal() {
 }
 
 function addType() {
-  types.push({ adult: 1, child: 0, count: 1 });
+  types.push({ adult: 1, child: 0, count: 1, memo: '' });
   renderTypes();
 }
 
@@ -305,9 +271,10 @@ function renderTypes() {
   types.forEach((t, i) => {
     typeList.innerHTML += `
       <tr>
-        <td><input type="number" value="${t.adult}" onchange="types[${i}].adult = +this.value"></td>
-        <td><input type="number" value="${t.child}" onchange="types[${i}].child = +this.value"></td>
-        <td><input type="number" value="${t.count}" onchange="types[${i}].count = +this.value"></td>
+        <td><input type="number" min="0" value="${t.adult}" onchange="types[${i}].adult = +this.value || 0"></td>
+        <td><input type="number" min="0" value="${t.child}" onchange="types[${i}].child = +this.value || 0"></td>
+        <td><input type="number" min="1" value="${t.count}" onchange="types[${i}].count = +this.value || 1"></td>
+        <td><input type="text" value="${t.memo}" onchange="types[${i}].memo = this.value"></td>
         <td><button class="delete" onclick="deleteType(${i})">삭제</button></td>
       </tr>
     `;
@@ -326,7 +293,7 @@ function saveTypes() {
   });
 
   if (totalAdultsFromTypes !== totalAdult || totalChildrenFromTypes !== totalChild) {
-    alert("인원을 확인해주세요.");
+    alert("입력한 조건의 총 인원과 전체 인원이 일치하지 않습니다.\n다시 확인해주세요.");
   } else {
     closeModal();
   }
@@ -345,27 +312,22 @@ function calculate() {
   const perAdult = totalAdult > 0 ? adultCost / totalAdult : 0;
   const perChild = totalChild > 0 ? childCost / totalChild : 0;
 
-
   let html = `
     <strong>계산 기준</strong><br>
-    공통 1인당: ${totalCost} ÷ ${totalPeople} = ${perPerson.toFixed(0)}원<br>
-    어른 1인당: ${adultCost} ÷ ${totalAdult} = ${perAdult.toFixed(0)}원<br>
-    아이 1인당: ${childCost} ÷ ${totalChild} = ${perChild.toFixed(0)}원
+    공통 1인당: ${totalCost.toLocaleString()}원 ÷ ${totalPeople}명 = ${perPerson.toFixed(0)}원<br>
+    어른 1인당: ${adultCost.toLocaleString()}원 ÷ ${totalAdult}명 = ${perAdult.toFixed(0)}원<br>
+    아이 1인당: ${childCost.toLocaleString()}원 ÷ ${totalChild}명 = ${perChild.toFixed(0)}원
     <hr>
-
-
     <strong>정산</strong><br><br>
   `;
 
   types.forEach(t => {
-    const sum =
-      Math.floor(((t.adult + t.child) * perPerson + t.adult * perAdult + t.child * perChild ) /100) * 100;
-
+    const sum = Math.round(((t.adult + t.child) * perPerson + t.adult * perAdult + t.child * perChild) / 100) * 100;
+    const memoText = t.memo ? ` ${t.memo}` : '';
     html += `
       <div class="type-result">
-        <span>어른 ${t.adult}명 + 아이 ${t.child}명 / 총 ${t.count} 가구 </span><br>
-           <span> 👉 가구당 ${sum.toFixed(0)}원</span>
-        
+        어른 ${t.adult}명 + 아이 ${t.child}명 / 총 ${t.count}가구 / ${memoText}<br>
+        <strong>👉 가구당 ${sum.toLocaleString()}원</strong>
       </div>
     `;
   });
@@ -373,6 +335,5 @@ function calculate() {
   result.innerHTML = html;
 }
 </script>
-
 </body>
 </html>
